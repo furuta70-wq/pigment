@@ -1056,6 +1056,25 @@ input[type=range]::-moz-range-thumb{width:16px;height:16px;border:3px solid #253
 .panel.right .dry-now:disabled {
   opacity:.38;cursor:not-allowed;filter:saturate(.35);
 }
+
+/* V34: Native photo-share where supported, with a touch-save PNG fallback. */
+.save-preview-back{z-index:60;padding:max(12px,env(safe-area-inset-top)) 14px max(12px,env(safe-area-inset-bottom));}
+.save-preview-dialog{
+ width:min(92vw,640px);max-width:640px;max-height:calc(100dvh - 34px);overflow:auto;
+ padding:clamp(14px,2.8vw,23px);border:1px solid #997956;
+ border-radius:19px;background:linear-gradient(151deg,#46352b,#281f1b 68%,#241b18);
+ box-shadow:inset 0 1px 0 #d0b69756,0 22px 75px #000b;color:#f6ead6;
+ animation:modal-rise .23s cubic-bezier(.15,.8,.26,1) both;
+}
+.save-preview-dialog h2{font-size:17px;letter-spacing:.045em;margin:0 0 8px}
+.save-preview-dialog p{font-size:12px;line-height:1.65;color:#ead6bc;margin:0 0 12px}
+.save-preview-art{display:block;width:100%;aspect-ratio:4/3;height:auto;max-height:min(58dvh,390px);object-fit:contain;background:#fff;border:2px solid #f0e7d6;border-radius:5px;box-shadow:0 8px 19px #0006;-webkit-touch-callout:default;touch-action:auto;user-select:auto;-webkit-user-select:auto;}
+.save-preview-help{margin:10px 0 11px!important;color:#f9e9d1!important}
+.save-preview-actions{display:flex;gap:9px;flex-wrap:wrap;justify-content:flex-end}
+.save-preview-actions .action{padding-inline:14px;min-height:42px;height:auto;white-space:normal}
+.save-preview-actions .preview-open{background:linear-gradient(#f8ecd7,#e0caa8);color:#372b22;border-color:#f5e7ca;box-shadow:inset 0 1px 0 #fff,0 2px 4px #0005;text-decoration:none}
+.save-preview-actions .preview-open:hover{filter:brightness(1.07)}
+@media(max-height:650px){.save-preview-dialog{padding:12px}.save-preview-art{max-height:45dvh}}
 </style>
 </head>
 <body>
@@ -1121,6 +1140,18 @@ input[type=range]::-moz-range-thumb{width:16px;height:16px;border:3px solid #253
 </div>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 <div class="modal-back" id="clearModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><div class="modal"><h2 id="modalTitle">絵をすべて消去しますか？</h2><p>キャンバスを白紙に戻します。消去直後は「戻す」で取り消せます。</p><div class="modal-buttons"><button type="button" class="action" id="cancelClear">キャンセル</button><button type="button" class="action primary" id="confirmClear">全消去する</button></div></div></div>
+<div class="modal-back save-preview-back" id="savePreview" role="dialog" aria-modal="true" aria-labelledby="savePreviewTitle" aria-hidden="true">
+ <div class="save-preview-dialog">
+  <h2 id="savePreviewTitle">画像を保存</h2>
+  <p id="savePreviewSummary">PNG画像を用意しました。</p>
+  <img class="save-preview-art" id="savePreviewImage" src="" alt="保存用の800×600の完成画像" draggable="false" />
+  <p class="save-preview-help" id="savePreviewHelp">画像を長押しして「写真に追加」または「画像を保存」を選んでください。表示されない場合は、画像だけを開いて操作してください。</p>
+  <div class="save-preview-actions">
+   <button type="button" class="action" id="savePreviewClose">閉じる</button>
+   <a class="action preview-open" id="savePreviewOpen" href="#" target="_blank" rel="noopener">画像だけを開く</a>
+  </div>
+ </div>
+</div>
 <script>
 (()=>{'use strict';
 const W=800,H=600,N=W*H,P=12,BANDS=16,TILE=40,TW=Math.ceil(W/TILE),TH=Math.ceil(H/TILE);
@@ -2083,13 +2114,97 @@ document.getElementById('dryNow').addEventListener('click',dryAll);
 const clearModal=document.getElementById('clearModal');const openModal=()=>{clearModal.classList.add('show');document.getElementById('cancelClear').focus()};const closeModal=()=>clearModal.classList.remove('show');document.getElementById('clear').addEventListener('click',openModal);document.getElementById('cancelClear').addEventListener('click',closeModal);clearModal.addEventListener('click',e=>{if(e.target===clearModal)closeModal()});
 document.getElementById('confirmClear').addEventListener('click',()=>{if(painting)finishStroke();beginAction();for(let id=0;id<TW*TH;id++)pending.before.set(id,captureTile(id));wet.fill(0);mass.fill(0);age.fill(0);fixedRelief.fill(0);fixedGroove.fill(0);wetGroove.fill(0);bleedEnergy.fill(0);bleedDx.fill(0);bleedDy.fill(0);dry.set(paper);activeFlags.fill(0);activeList.length=0;resetBundlePigment();paintLoad=1;inkAlerted=false;inkEmptyAlerted=false;resetHairSupply();endAction();flushAll();closeModal();updateInkUI(true);toast('キャンバスを全消去しました')});
 document.getElementById('undo').addEventListener('click',undo);document.getElementById('redo').addEventListener('click',redo);
-document.getElementById('save').addEventListener('click',()=>{
- if(painting)finishStroke();if(raf){cancelAnimationFrame(raf);raf=0;flush()}
- const now=new Date(),stamp=`${now.getFullYear()}${String(now.getMonth()+1).padStart(2,'0')}${String(now.getDate()).padStart(2,'0')}-${String(now.getHours()).padStart(2,'0')}${String(now.getMinutes()).padStart(2,'0')}`;
- try{const a=document.createElement('a');a.href=canvas.toDataURL('image/png');a.download=`PIGMENT-${stamp}.png`;document.body.appendChild(a);a.click();a.remove();const btn=document.getElementById('save');btn.classList.remove('saved');void btn.offsetWidth;btn.classList.add('saved');setTimeout(()=>btn.classList.remove('saved'),850);toast('画像を保存しました')}
- catch(err){toast('保存できませんでした。ブラウザの設定を確認してください')}
+// iPad/iPhone: hand a real PNG file to the system share sheet, where the
+// user can choose the Photos action. Browsers cannot write to Photos silently.
+// If Web Share is unavailable (e.g. a file:// page or an embedded viewer),
+// show the *actual* 800x600 PNG so it can be long-pressed and saved.
+// Desktop: use an object-URL download rather than data-URL navigation.
+const appleTouch=/iPad|iPhone|iPod/i.test(navigator.userAgent)
+ || (navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+const saveButton=document.getElementById('save');
+const saveLabel=saveButton.querySelector('span');
+if(saveLabel)saveLabel.textContent=appleTouch?'画像を保存':'ダウンロード';
+saveButton.title=appleTouch?'共有メニューから写真アプリへ保存':'800×600のPNG画像をダウンロード';
+const savePreview=document.getElementById('savePreview');
+const savePreviewImage=document.getElementById('savePreviewImage');
+const savePreviewOpen=document.getElementById('savePreviewOpen');
+const savePreviewClose=document.getElementById('savePreviewClose');
+let saveBusy=false,previewUrl=null;
+function exportName(){
+ const now=new Date();
+ const stamp=`${now.getFullYear()}${String(now.getMonth()+1).padStart(2,'0')}${String(now.getDate()).padStart(2,'0')}-${String(now.getHours()).padStart(2,'0')}${String(now.getMinutes()).padStart(2,'0')}`;
+ return `PIGMENT-${stamp}.png`;
+}
+function prepareExport(){
+ if(painting)finishStroke();
+ if(raf){cancelAnimationFrame(raf);raf=0;flush()}
+ return canvas.toDataURL('image/png');
+}
+function pngBlobFromDataUrl(data){
+ const b64=data.substring(data.indexOf(',')+1),decoded=atob(b64);
+ const bytes=new Uint8Array(decoded.length);
+ for(let i=0;i<decoded.length;i++)bytes[i]=decoded.charCodeAt(i);
+ return new Blob([bytes],{type:'image/png'});
+}
+function revokePreviewUrl(){if(previewUrl){URL.revokeObjectURL(previewUrl);previewUrl=null}}
+function showSavePreview(blob){
+ revokePreviewUrl();previewUrl=URL.createObjectURL(blob);
+ savePreviewImage.src=previewUrl;
+ savePreviewOpen.href=previewUrl;
+ document.getElementById('savePreviewSummary').textContent='完成画像（800×600 PNG）です。';
+ savePreview.classList.add('show');savePreview.setAttribute('aria-hidden','false');
+ savePreviewClose.focus();
+}
+function closeSavePreview(){
+ savePreview.classList.remove('show');savePreview.setAttribute('aria-hidden','true');
+ saveButton.focus();
+ // Keep the URL alive briefly in case an image tab was just opened.
+ if(previewUrl){const u=previewUrl;previewUrl=null;setTimeout(()=>URL.revokeObjectURL(u),60000)}
+}
+savePreviewClose.addEventListener('click',closeSavePreview);
+savePreview.addEventListener('click',e=>{if(e.target===savePreview)closeSavePreview()});
+savePreviewOpen.addEventListener('click',()=>{toast('画像を長押しして写真アプリに保存できます')});
+function flashSaveButton(){
+ saveButton.classList.remove('saved');void saveButton.offsetWidth;saveButton.classList.add('saved');
+ setTimeout(()=>saveButton.classList.remove('saved'),850);
+}
+function downloadBlob(blob,filename){
+ const url=URL.createObjectURL(blob),a=document.createElement('a');
+ a.href=url;a.download=filename;a.style.display='none';
+ document.body.appendChild(a);a.click();a.remove();
+ setTimeout(()=>URL.revokeObjectURL(url),60000);
+}
+saveButton.addEventListener('click',async()=>{
+ if(saveBusy)return;
+ saveBusy=true;
+ try{
+  // toDataURL + Blob conversion are synchronous: share() is invoked while
+  // Safari still has the user gesture (async canvas.toBlob can lose it).
+  const data=prepareExport(),blob=pngBlobFromDataUrl(data),filename=exportName();
+  if(appleTouch){
+   const file=new File([blob],filename,{type:'image/png'});
+   const canNativeShare=typeof navigator.share==='function'&&
+    (typeof navigator.canShare!=='function'||navigator.canShare({files:[file]}));
+   if(canNativeShare){
+    try{
+     await navigator.share({files:[file],title:'PIGMENT'});
+     flashSaveButton();
+     toast('共有メニューを閉じました。写真への保存を選択した場合は写真アプリで確認できます');
+    }catch(err){
+     if(err&&err.name==='AbortError'){toast('保存をキャンセルしました');}
+     else{showSavePreview(blob);toast('共有できないため、画像を表示しました');}
+    }
+   }else{showSavePreview(blob)}
+  }else{
+   downloadBlob(blob,filename);
+   flashSaveButton();toast('PNGのダウンロードを開始しました');
+  }
+ }catch(err){
+  console.error('PIGMENT image export failed',err);
+  toast('画像を書き出せませんでした。ブラウザを確認してください');
+ }finally{saveBusy=false}
 });
-document.addEventListener('keydown',e=>{if(clearModal.classList.contains('show')){if(e.key==='Escape')closeModal();return}if(e.target instanceof HTMLInputElement)return;const ctrl=e.metaKey||e.ctrlKey;if(ctrl&&e.key.toLowerCase()==='z'){e.preventDefault();e.shiftKey?redo():undo();return}if(ctrl&&e.key.toLowerCase()==='y'){e.preventDefault();redo();return}if(ctrl||e.altKey)return;const k=e.key.toLowerCase();if(k==='b')setTool('paint');else if(k==='m')setTool('mix');else if(k==='['||k===']'){const inp=document.getElementById('size');inp.value=Math.max(4,Math.min(80,+inp.value+(k==='['?-4:4)));inp.dispatchEvent(new Event('input'))}});
+document.addEventListener('keydown',e=>{if(savePreview.classList.contains('show')){if(e.key==='Escape')closeSavePreview();return}if(clearModal.classList.contains('show')){if(e.key==='Escape')closeModal();return}if(e.target instanceof HTMLInputElement)return;const ctrl=e.metaKey||e.ctrlKey;if(ctrl&&e.key.toLowerCase()==='z'){e.preventDefault();e.shiftKey?redo():undo();return}if(ctrl&&e.key.toLowerCase()==='y'){e.preventDefault();redo();return}if(ctrl||e.altKey)return;const k=e.key.toLowerCase();if(k==='b')setTool('paint');else if(k==='m')setTool('mix');else if(k==='['||k===']'){const inp=document.getElementById('size');inp.value=Math.max(4,Math.min(80,+inp.value+(k==='['?-4:4)));inp.dispatchEvent(new Event('input'))}});
 // Wet paint keeps reacting for a moment after two colours meet. Process a
 // small batch of delayed bleed steps so the contact zone softens over time
 // instead of resolving in a single frame.
@@ -2136,7 +2251,7 @@ const frameObserver=new ResizeObserver(entries=>{
 frameObserver.observe(document.getElementById('frame'));
 // Guarantee the white paper is visible before the first stroke, including without GPU acceleration.
 document.querySelector('.mode').style.setProperty('--active-ink',paletteColors[selected]);prepareBristles();resetHairSupply();flushAll();updateHistory();updateInkUI(true);updateDryUI();
-window.__pigmentDebug={validateMass(){let biggest=0,neg=0;for(let i=0;i<N;i++){if(mass[i]<-1e-5)neg++;if(mass[i]>.0001){let total=0;for(let p=0;p<P;p++)total+=wet[i*P+p];biggest=Math.max(biggest,Math.abs(total-mass[i]))}}return {biggest,neg}},getVersion(){return 33},getBundlePigments(){return Array.from({length:BUNDLES},(_,j)=>Array.from(bundleCarry.subarray(j*P,(j+1)*P)))},getBundleCount(){return BUNDLES},getBundleStain(){return Array.from({length:BUNDLES},(_,j)=>Array.from(bundleStain.subarray(j*P,(j+1)*P)))},getBundleTintFactor(){return Array.from(bundleTintFactor)},getBundleWeightUsed(){return Array.from(bundleWeightUsed)},getPaintedPixelCount(){let n=0;for(let i=0;i<N;i++)if(mass[i]>.05)n++;return n},getMass(x,y){return mass[y*W+x]},getRgb(x,y){const i=(y*W+x)*4;return Array.from(rgba.slice(i,i+3))},getPigments(x,y){return Array.from(wet.slice((y*W+x)*P,(y*W+x+1)*P))},getActiveCount(){return activeList.length},getBrushLoad(){return paintLoad},getBrushCapacityRatio(){return brushCapacityRatio()},getBrushSize(){return brushSize},getBrushWidthFactor(){return currentWidthFactor},getSpeedWidth(speed,pressure=.55,isPen=false){return speedWidth(speed,pressure,isPen)},getStrokeSpeed(){return strokeSpeed},getWidthAt(speed,pressure=.55,pen=false){return speedWidth(speed,pressure,pen)},getLastPoolingMoved(){return lastPoolingMoved},getEdgeDepth(x,y){return edgeDepth(y*W+x)},getColors(){return [...colorNames]},getTintStrength(){return [...tintStrength]},getSurfaceHeight(x,y){return surfaceHeight(y*W+x)},getRelief(x,y){const i=y*W+x;return {dry:fixedRelief[i],wet:mass[i],dryGroove:fixedGroove[i],wetGroove:wetGroove[i]}}};
+window.__pigmentDebug={validateMass(){let biggest=0,neg=0;for(let i=0;i<N;i++){if(mass[i]<-1e-5)neg++;if(mass[i]>.0001){let total=0;for(let p=0;p<P;p++)total+=wet[i*P+p];biggest=Math.max(biggest,Math.abs(total-mass[i]))}}return {biggest,neg}},getVersion(){return 34},getSaveMode(){return appleTouch?'photos':'download'},getBundlePigments(){return Array.from({length:BUNDLES},(_,j)=>Array.from(bundleCarry.subarray(j*P,(j+1)*P)))},getBundleCount(){return BUNDLES},getBundleStain(){return Array.from({length:BUNDLES},(_,j)=>Array.from(bundleStain.subarray(j*P,(j+1)*P)))},getBundleTintFactor(){return Array.from(bundleTintFactor)},getBundleWeightUsed(){return Array.from(bundleWeightUsed)},getPaintedPixelCount(){let n=0;for(let i=0;i<N;i++)if(mass[i]>.05)n++;return n},getMass(x,y){return mass[y*W+x]},getRgb(x,y){const i=(y*W+x)*4;return Array.from(rgba.slice(i,i+3))},getPigments(x,y){return Array.from(wet.slice((y*W+x)*P,(y*W+x+1)*P))},getActiveCount(){return activeList.length},getBrushLoad(){return paintLoad},getBrushCapacityRatio(){return brushCapacityRatio()},getBrushSize(){return brushSize},getBrushWidthFactor(){return currentWidthFactor},getSpeedWidth(speed,pressure=.55,isPen=false){return speedWidth(speed,pressure,isPen)},getStrokeSpeed(){return strokeSpeed},getWidthAt(speed,pressure=.55,pen=false){return speedWidth(speed,pressure,pen)},getLastPoolingMoved(){return lastPoolingMoved},getEdgeDepth(x,y){return edgeDepth(y*W+x)},getColors(){return [...colorNames]},getTintStrength(){return [...tintStrength]},getSurfaceHeight(x,y){return surfaceHeight(y*W+x)},getRelief(x,y){const i=y*W+x;return {dry:fixedRelief[i],wet:mass[i],dryGroove:fixedGroove[i],wetGroove:wetGroove[i]}}};
 })();
 </script>
 </body>
