@@ -2,9 +2,10 @@
 <html lang="ja">
 <head>
 <meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover" />
 <meta name="theme-color" content="#111b20" />
-<title>PIGMENT — 混ざる絵の具</title>
+<title>PIGMENT〜色を混ぜる〜</title>
+<meta name="apple-mobile-web-app-title" content="PIGMENT〜色を混ぜる〜" />
 <style>
 :root{color-scheme:dark;--bg:#111b20;--panel:#1d2b30;--metal:#324149;--rim:#43555a;--text:#edf1ed;--muted:#a8b7b5;--mint:#dbe8d0}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -197,8 +198,9 @@ input[type=range]::-moz-range-thumb{width:16px;height:16px;border:3px solid #253
 .panel.left .paint::before{display:none}
 .panel.left .pigment-well::before{
  content:"";position:absolute;z-index:0;pointer-events:none;
- left:50%;top:50%;width:100%;height:100%;
- transform:translate(-50%,-50%) rotate(var(--dish-rotation,0deg));
+ inset:0;width:100%;height:100%;
+ transform-origin:center center;
+ transform:rotate(var(--dish-rotation,0deg));
  border-radius:50%;
  background:
    radial-gradient(ellipse 68% 48% at 46% 37%,#d4cfc6 3%,#e0d9cf 65%,transparent 100%),
@@ -240,7 +242,7 @@ input[type=range]::-moz-range-thumb{width:16px;height:16px;border:3px solid #253
  text-shadow:0 1px 0 #fffafa;
 }
 .panel.left .paint.active .name{color:#24231f}
-.panel.left .paint.pressing .pigment-well::before{filter:brightness(.973);transform:translateX(-50%) scale(.975) rotate(var(--dish-rotation,0deg))}
+.panel.left .paint.pressing .pigment-well::before{filter:brightness(.973);transform:scale(.975) rotate(var(--dish-rotation,0deg))}
 .panel.left .paint.pressing .pigment-well{filter:drop-shadow(0 1px 1px #51453550)}
 .panel.left .ink-well{
  margin-top:auto;
@@ -266,7 +268,7 @@ input[type=range]::-moz-range-thumb{width:16px;height:16px;border:3px solid #253
  .panel.left{padding:13px;border-radius:19px}
  .panel.left .paints{gap:6px}
  .panel.left .paint .pigment-well{width:54px;height:54px}
- .panel.left .paint .name{font-size:10px}
+ .panel.left .paint .name{font-size:11.5px;line-height:1.14}
 }
 
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:0.01ms!important;transition-duration:0.01ms!important}}
@@ -1075,6 +1077,84 @@ input[type=range]::-moz-range-thumb{width:16px;height:16px;border:3px solid #253
 .save-preview-actions .preview-open{background:linear-gradient(#f8ecd7,#e0caa8);color:#372b22;border-color:#f5e7ca;box-shadow:inset 0 1px 0 #fff,0 2px 4px #0005;text-decoration:none}
 .save-preview-actions .preview-open:hover{filter:brightness(1.07)}
 @media(max-height:650px){.save-preview-dialog{padding:12px}.save-preview-art{max-height:45dvh}}
+
+/* V35 — porcelain mixing dish is an actual thirteenth paint, not a mode switch.
+   The twelve source paints remain primary and aligned in two columns. */
+.panel.left{gap:4px;padding:clamp(8px,.9vw,13px);--dish-diameter:clamp(26px,calc((var(--canvas-height,650px) - 300px)/6),70px)}
+.panel.left .paints{flex:1 1 auto;min-height:0;grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:repeat(6,minmax(0,1fr));gap:1px 3px;align-items:stretch}
+.panel.left .paint{padding:0 0 1px;gap:0;min-height:0}
+.panel.left .paint .pigment-well{width:var(--dish-diameter);height:var(--dish-diameter);aspect-ratio:1/1;flex:0 0 auto;max-width:96%}
+.panel.left .paint .pigment-art{width:93%;height:93%}
+.panel.left .paint .name{font-size:clamp(10.5px,.87vw,12.3px);line-height:1.12;letter-spacing:0;margin-top:1px;font-weight:770;color:#413b34}
+.panel.left .ink-well{flex:0 0 auto;margin-top:1px;padding:8px 9px 9px}
+.panel.left .ink-head{margin-bottom:6px}
+.mix-tray{position:relative;flex:0 0 auto;z-index:2;min-width:0;padding:6px;border:1px solid #d9cdbd;border-radius:13px;
+ background:linear-gradient(150deg,#fffefa,#e9e2d8 86%);box-shadow:inset 0 1px 1px #fff,0 2px 4px #84796830;}
+.mix-tray-head{display:flex;align-items:center;justify-content:space-between;gap:6px;margin:0 3px 5px;color:#41392f}
+.mix-tray-head strong{font-size:11px;font-weight:800;white-space:nowrap}
+.mix-dish{display:block;position:relative;width:100%;height:53px;border-radius:13px;overflow:hidden;touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;
+ border:1px solid #c6b7a3;background:radial-gradient(ellipse 78% 96% at 48% 43%,#eee9e1,#d6cdc1 80%,#eee7db 100%);
+ box-shadow:inset 0 3px 9px #91857578,inset 0 -3px 3px #ffffffd1,0 1px 0 #fffefb;transition:transform .12s,box-shadow .14s,border-color .16s,background .2s}
+.mix-dish::before{content:'';position:absolute;inset:1px;border-radius:12px;pointer-events:none;opacity:.72;background:radial-gradient(circle at 22% 26%,#ffffff7a,transparent 28%),radial-gradient(circle at 78% 78%,#0000000f,transparent 33%);transition:opacity .16s,filter .18s}
+.mix-dish.ready-pour{border-color:#d3bb8e;background:radial-gradient(ellipse 80% 98% at 48% 42%,#f2ede4,#dcd1c2 82%,#f1e9dc 100%)}
+.mix-dish.ready-stir{border-color:#baa08a;background:radial-gradient(ellipse 80% 98% at 48% 42%,#ece4d8,#d2c3b3 82%,#eee1d0 100%)}
+ .mix-dish.stirring{cursor:grabbing;box-shadow:inset 0 5px 12px #7869577d,inset 0 -2px 3px #fff8f3,0 1px 0 #fff}
+.mix-dish.stirring::before{opacity:.92;filter:saturate(1.06)}
+.mix-dish:active,.mix-dish.pouring{box-shadow:inset 0 5px 11px #8e847c9c,inset 0 -2px 3px #fff5e8,0 1px 0 #fff;transform:translateY(1px)}
+.mix-dish:focus-visible,.mix-tray button:focus-visible{outline:2px solid #b78243;outline-offset:2px}
+#mixCanvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.mix-empty{position:absolute;left:0;right:0;top:50%;transform:translateY(-50%);font-size:10px;font-weight:680;color:#8c7c69;pointer-events:none}
+.mix-tray-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px;margin-top:5px}
+.mix-tray-actions button{height:28px;min-width:0;border-radius:8px;padding:0 3px;font-size:10px;font-weight:760;white-space:nowrap;
+ transition:transform .12s,background .16s,color .16s,filter .16s}
+.mix-tray-actions button:active:not(:disabled){transform:translateY(2px)}
+.mix-use{color:#372b1d;border:1px solid #d7b885;background:linear-gradient(#ffefc8,#e6ce9f 80%,#cbb28a);box-shadow:inset 0 1px 0 #fff9e7,0 2px 0 #a28d6c}
+.mix-use.selected{background:linear-gradient(#f4e5a9,#d5ad60);box-shadow:inset 0 2px 4px #9c793f69,0 0 0 2px #baa16b}
+.mix-reset{color:#5b5247;border:1px solid #c2b4a2;background:linear-gradient(#f9f5ee,#ded6ca);box-shadow:inset 0 1px 0 #fff,0 2px 0 #b9afa2}
+.mix-tray-actions button:disabled{opacity:.44;cursor:default;filter:saturate(.45);box-shadow:none}
+.mix-tray.using{border-color:#bd9b60;box-shadow:inset 0 1px 1px #fff,0 0 0 1px #c1a46c5e}
+@media(min-width:1001px) and (max-width:1180px){
+ .panel.left{--dish-diameter:clamp(25px,calc((var(--canvas-height,530px) - 244px)/6),48px);gap:2px;padding:8px}
+ .panel.left .paints{gap:0 2px}
+ .panel.left .paint .pigment-well{width:var(--dish-diameter);height:var(--dish-diameter)}
+ .panel.left .paint .name{font-size:10.3px;line-height:1.12;margin-top:1px}
+ .mix-tray{padding:5px;border-radius:11px}
+ .mix-tray-head{margin-bottom:3px}
+ .mix-tray-head strong{font-size:10px}
+ .mix-dish{height:40px}
+ .mix-tray-actions{margin-top:3px;gap:4px}
+ .mix-tray-actions button{height:25px;font-size:9px}
+ .panel.left .ink-well{padding:6px 7px 7px}
+}
+@media(max-width:1000px){
+ .panel.left{--dish-diameter:54px;gap:8px;padding:12px}
+ .panel.left .paints{flex:0 0 auto;grid-template-columns:repeat(3,minmax(0,1fr));grid-template-rows:repeat(4,minmax(73px,auto));gap:5px}
+ .panel.left .paint .pigment-well{width:54px;height:54px}
+ .panel.left .paint .name{font-size:11.5px;line-height:1.14}
+ .mix-dish{height:66px}
+ .mix-tray-actions button{height:36px;font-size:11px}
+}
+@media(max-width:600px){
+ .panel.left .paints{grid-template-columns:repeat(4,minmax(0,1fr));grid-template-rows:repeat(3,minmax(74px,auto));gap:5px}
+ .panel.left .paint .pigment-well{width:52px;height:52px}
+ .panel.left .paint .name{font-size:11px}
+ .mix-dish{height:74px}
+}
+
+
+/* V39 — painting is a touch instrument, not a selectable or zoomable document.
+   The exported image in the fallback preview deliberately keeps long-press save. */
+html,body{overscroll-behavior:none;-webkit-text-size-adjust:100%;text-size-adjust:100%}
+.app,.app *{user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+.app{touch-action:manipulation}
+.app button,.app svg,.app canvas{ -webkit-user-drag:none;user-drag:none; }
+.app input[type="range"]{touch-action:pan-x}
+.app #canvas,.app #mixDish{touch-action:none}
+.save-preview-back .save-preview-art{
+ user-select:auto;-webkit-user-select:auto;
+ -webkit-touch-callout:default;touch-action:auto;-webkit-user-drag:auto;
+}
+
 </style>
 </head>
 <body>
@@ -1082,6 +1162,17 @@ input[type=range]::-moz-range-thumb{width:16px;height:16px;border:3px solid #253
 <main class="workspace">
  <aside class="panel left" aria-label="絵の具パレット">
   <div class="paints" id="paints"></div>
+  <section class="mix-tray" id="mixTray" aria-label="13色目をつくる混色皿">
+   <div class="mix-tray-head"><strong>混色皿</strong></div>
+   <button type="button" id="mixDish" class="mix-dish ready-pour" aria-label="現在選択している色を加える。長押しで連続して加える">
+    <canvas id="mixCanvas" width="220" height="76" aria-hidden="true"></canvas>
+    <span class="mix-empty" id="mixEmpty">ここに色を置く</span>
+   </button>
+   <div class="mix-tray-actions">
+    <button type="button" id="mixUse" class="mix-use" disabled>この色で塗る</button>
+    <button type="button" id="mixReset" class="mix-reset" disabled>リセット</button>
+   </div>
+  </section>
   <div class="ink-well" aria-label="筆の含み">
    <div class="ink-head"><strong>筆の含み</strong><span id="inkText">100%</span></div>
    <div class="ink-bar"><div class="ink-fill" id="inkFill"></div></div>
@@ -1168,6 +1259,16 @@ let dirtyX0=W,dirtyY0=H,dirtyX1=-1,dirtyY1=-1;
 const REFERENCE_BRUSH_SIZE=28;
 let selected=2,tool='paint',brushSize=REFERENCE_BRUSH_SIZE,flow=.75,blend=.65,drying=true,dryDuration=120000,pausedAt=0,painting=false,pointerId=null,prevPoint=null,strokeSeed=1,pending=null,paintLoad=1,inkAlerted=false,inkEmptyAlerted=false,lastInkUi=-1,stampTick=0,strokeSpeed=.42,currentWidthFactor=1,bristleAxisX=1,bristleAxisY=0,axisReady=false,lastStrokeVx=1,lastStrokeVy=0,lastStrokePressure=.55,lastStrokePen=false;
 // Capacity factor: 28px = 1.00, 56px = 2.00, 14px = 0.50.
+// The real brush keeps a 12-pigment recipe; the thirteenth colour is a
+// measured mixture of those same pigments, never an RGB approximation.
+const mixAmounts=new Float32Array(P),brushRecipe=new Float32Array(P);
+brushRecipe[selected]=1;
+let mixTotal=0,mixBrushActive=false,mixBrushColour='',mixColour='',mixDrawCount=0;
+const mixRecent=[];
+const mixDabs=[];
+const mixSwirls=[];
+let mixStirCount=0, mixDirtySinceUse=false;
+const mixToolCarry=new Float32Array(P);let mixToolLoad=0;
 const brushCapacityRatio=()=>brushSize/REFERENCE_BRUSH_SIZE;
 // The last reserve is deposited sparsely, and an empty brush deposits nothing.
 // The slider measures a physical paint reserve, not just a decorative progress bar.
@@ -1188,6 +1289,14 @@ const paletteDisplayOrder=[2,3,4,5,6,7,8,9,10,11,0,1];
 // especially effective when mixed with colored pigments.
 const tintStrength=new Float32Array([18.0,1.50,.77,.86,.84,1.30,.91,1.75,1.85,1.17,.81,.92]);
 const hidePower=new Float32Array([1.70,1.28,.94,1.05,1.30,.82,.83,.90,.92,.98,1.36,1.14]);
+// One tap means one *dab*, not identical volumes for every tube.
+// Strong tinters (PB15 / PG7 / black) squeeze out smaller paint dollops;
+// weak yellow / earth colours squeeze out larger ones. Spectral tint strength
+// and the 12 base pigments are unchanged. Longer press deposits more of the
+// same physical material, so changing tap/hold duration changes the mixture.
+// Numbers are deliberately modest ergonomic calibration, not a claim about
+// grams of paint squeezed from a specific commercial tube.
+const mixDabVolume=new Float32Array([.95,.50,1.35,1.25,1.00,.95,1.05,.52,.55,.85,1.25,1.10]);
 
 const wavelengths=Array.from({length:BANDS},(_,i)=>400+i*20);
 const ks=Array.from({length:P},()=>new Float32Array(BANDS));
@@ -1202,7 +1311,7 @@ function refl(j,w){switch(j){
  case 5:return .025+.32*gauss(w,438,42)+.87*sigmoid((w-610)/14); // Quinacridone magenta
  case 6:return .025+.78*gauss(w,438,45)+.17*gauss(w,496,45)+.10*sigmoid((w-672)/18); // Ultramarine
  case 7:return .023+.68*gauss(w,470,46)+.18*gauss(w,508,49); // Phthalo blue
- case 8:return .024+.80*gauss(w,537,40); // Phthalo green
+ case 8:return .024+.70*gauss(w,522,45)+.075*gauss(w,468,40); // Cooler Phthalo Green (blue shade) approximation
  case 9:return .022+.45*gauss(w,418,38)+.24*gauss(w,651,49); // Dioxazine violet
  case 10:return .058+.59*sigmoid((w-541)/24); // Yellow ochre
  default:return .045+.41*sigmoid((w-593)/22); // Burnt sienna
@@ -1637,7 +1746,7 @@ function stamp(cx,cy,vx,vy,pressure,now,widthFactor=1,motion=0,axisX=1,axisY=0){
   for(let p=0;p<P;p++){
    const k=off+p;
    let amount=bundleStain[k];
-   if(tool==='paint'&&p===selected)amount=0;
+   if(tool==='paint'&&!mixBrushActive&&p===selected)amount=0;
    bundleStainSnapshot[k]=amount;
    total+=amount;
    foreign+=amount;
@@ -1696,7 +1805,7 @@ function stamp(cx,cy,vx,vy,pressure,now,widthFactor=1,motion=0,axisX=1,axisY=0){
     let room=Math.max(0,maxBundleHold-bundleHeldMass[bundle]);
     for(let p=0;p<P;p++){
      if(room<.00001)break;
-     const eligible=tool==='mix'?1:(p===selected?.04:1);
+     const eligible=tool==='mix'?1:(mixBrushActive?(brushRecipe[p]>.02?.08:1):(p===selected?.04:1));
      const q=Math.min(room,wet[o+p],cache[cached+p]*pickupStrength*eligible);
      if(q>.0000001){
       room-=q;bundleHeldMass[bundle]+=q;
@@ -1748,7 +1857,10 @@ function stamp(cx,cy,vx,vy,pressure,now,widthFactor=1,motion=0,axisX=1,axisY=0){
    touchTile(x,y);
    if(dep>0){
     const stainDeposit=dep*stainFactor;
-    wet[o+selected]+=dep-stainDeposit;
+    const freshPaint=dep-stainDeposit;
+    if(mixBrushActive){
+     for(let p=0;p<P;p++)if(brushRecipe[p]>.00001)wet[o+p]+=freshPaint*brushRecipe[p];
+    }else wet[o+selected]+=freshPaint;
     paintedDuringStroke[index]=strokeSeed;
     if(stainDeposit>.000001&&bundleTintMass[bundle]>.001){
      const inv=stainDeposit/bundleTintMass[bundle];
@@ -1997,6 +2109,588 @@ const pigmentMarks=[
 const palette=document.getElementById('paints');const paletteColors=[];
 for(let p=0;p<P;p++)paletteColors[p]=colorSample(p);
 for(const p of paletteDisplayOrder){const button=document.createElement('button');button.className='paint'+(p===selected?' active':'');button.type='button';button.dataset.pigment=String(p);button.setAttribute('aria-label',colorNames[p]);button.setAttribute('aria-pressed',p===selected?'true':'false');button.style.setProperty('--pigment',paletteColors[p]);button.style.setProperty('--viscosity',(.30+(p*7%6)*.032)+'s');button.innerHTML=`<span class="pigment-well"><svg class="pigment-art" viewBox="0 0 100 80" aria-hidden="true"><defs><linearGradient id="pigShade${p}" x1="0" x2=".81" y1="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".43"/><stop offset=".38" stop-color="#fff" stop-opacity=".02"/><stop offset="1" stop-color="#020508" stop-opacity=".42"/></linearGradient></defs><g class="pigment-lump"><path class="pigment-base" d="${pigmentShapes[p]}" fill="${paletteColors[p]}"/><path d="${pigmentShapes[p]}" fill="url(#pigShade${p})"/><path class="pigment-stria" d="${pigmentMarks[p]}"/><ellipse class="pigment-dent" cx="50" cy="43" rx="15" ry="7"/></g></svg></span><span class="name">${shortNames[p]}</span>`;button.addEventListener('click',()=>selectPaint(p));palette.appendChild(button)}
+// The ceramic mixing dish: quick tap = one dab, hold = steadily more paint.
+// The source-colour buttons never lose their original one-tap-to-load behavior.
+const mixTray=document.getElementById('mixTray'),mixDish=document.getElementById('mixDish');
+const mixCanvas=document.getElementById('mixCanvas'),mixCtx=mixCanvas.getContext('2d');
+const mixEmpty=document.getElementById('mixEmpty');
+const mixUse=document.getElementById('mixUse'),mixReset=document.getElementById('mixReset');
+// Use exactly the same spectral recipe as the painting canvas. No RGB
+// averaging or different colours in the mixing dish.
+function mixColourRGB(amounts){
+ let total=0;for(let p=0;p<P;p++)total+=amounts[p];
+ if(total<.0001)return [250,249,245];
+ const backup=new Float32Array(wet.subarray(0,P));
+ const out=new Float32Array(3);
+ for(let p=0;p<P;p++)wet[p]=amounts[p]/total;
+ spectralColor(0,1,out);
+ wet.set(backup,0);
+ return [out[0],out[1],out[2]];
+}
+function mixColourFromAmounts(amounts){
+ let total=0;for(let p=0;p<P;p++)total+=amounts[p];
+ if(total<.0001)return '';
+ const rgb=mixColourRGB(amounts);
+ return `rgb(${Math.round(rgb[0])},${Math.round(rgb[1])},${Math.round(rgb[2])})`;
+}
+// A small, input-only ergonomic dose limiter. Real PB15/PG7 and blacks
+// stain exceptionally strongly. A fixed volume in the dish may therefore
+// leap from yellow to dark green in a single touch. Each touch still adds
+// physical material to the recipe; this merely makes the dab smaller when
+// that particular source colour would cause a very sudden *visible* change.
+// Nothing modifies tintStrength, spectral mixing, paint strokes, or drying.
+function srgbChannelToLinear(v){
+ const x=Math.max(0,Math.min(255,v))/255;
+ return x<=.04045?x/12.92:((x+.055)/1.055)**2.4;
+}
+function mixOKLab(rgb){
+ const r=srgbChannelToLinear(rgb[0]),g=srgbChannelToLinear(rgb[1]),b=srgbChannelToLinear(rgb[2]);
+ const l=Math.cbrt(.4122214708*r+.5363325363*g+.0514459929*b);
+ const m=Math.cbrt(.2119034982*r+.6806995451*g+.1073969566*b);
+ const s=Math.cbrt(.0883024619*r+.2817188376*g+.6299787005*b);
+ return [
+  .2104542553*l+.793617785*m-.0040720468*s,
+  1.9779984951*l-2.428592205*m+.4505937099*s,
+  .0259040371*l+.7827717662*m-.808675766*s
+ ];
+}
+function colourStepDistance(a,b){
+ const da=a[0]-b[0],db=a[1]-b[1],dc=a[2]-b[2];
+ return Math.hypot(da,db,dc);
+}
+const mixDoseProbe=new Float32Array(P);
+const MAX_TAP_STEP=.080,MAX_HOLD_STEP=.064;
+function calibratedMixDose(amount,pigment,held=false){
+ if(amount<=0||mixTotal<.0001)return amount;
+ const prev=mixOKLab(mixColourRGB(mixAmounts));
+ const limit=held?MAX_HOLD_STEP:MAX_TAP_STEP;
+ mixDoseProbe.set(mixAmounts);
+ const inspect=(a)=>{
+  mixDoseProbe[pigment]=mixAmounts[pigment]+a;
+  return colourStepDistance(prev,mixOKLab(mixColourRGB(mixDoseProbe)));
+ };
+ if(inspect(amount)<=limit)return amount;
+ // Keep a floor for responsive continuous holding; never silently ignore
+ // a press. Even at minimum, no pigment is generated or lost.
+ const min=amount*.012;
+ if(inspect(min)>=limit)return min;
+ let low=min,high=amount;
+ for(let i=0;i<7;i++){
+  const middle=(low+high)*.5;
+  if(inspect(middle)>limit)high=middle;else low=middle;
+ }
+ return low;
+}
+function activeInkColour(){return mixBrushActive?mixBrushColour:(paletteColors[selected]||'#dce9d1')}
+function mixEntries(){
+ const entries=[];
+ for(let p=0;p<P;p++)if(mixAmounts[p]>.01)entries.push({p,amount:mixAmounts[p]});
+ entries.sort((a,b)=>b.amount-a.amount);
+ return entries;
+}
+function describeMixIngredients(){
+ const entries=mixEntries();
+ if(!entries.length)return '空のパレット';
+ const names=entries.slice(0,3).map(e=>shortNames[e.p]);
+ return entries.length<=3 ? names.join('・') : `${names.join('・')} ほか${entries.length-3}色`;
+}
+function clampMix(v,a,b){return Math.max(a,Math.min(b,v))}
+function makeMixPointFromEvent(e){
+ const r=mixDish.getBoundingClientRect();
+ return {
+  x:clampMix((e.clientX-r.left)/Math.max(1,r.width),.14,.86),
+  y:clampMix((e.clientY-r.top)/Math.max(1,r.height),.22,.8)
+ };
+}
+// The porcelain mixing plate uses ONE continuous paint-film surface. Small
+// material parcels below are still used for conservative pigment transport,
+// but the renderer no longer paints their separate round contours/highlights.
+// A continuous height/pigment field makes wet whites visible by relief alone,
+// and automatically joins neighbouring parcels into a soft viscous surface.
+const DISH_SCALE=2,DISH_W=mixCanvas.width/DISH_SCALE,DISH_H=mixCanvas.height/DISH_SCALE;
+const DISH_PIXELS=DISH_W*DISH_H;
+const dishHeight=new Float32Array(DISH_PIXELS);
+const dishPigments=new Float32Array(DISH_PIXELS*P);
+const dishColourScratch=new Float32Array(3);
+const dishSpectrumScratch=new Float32Array(BANDS);
+const dishFilmCanvas=document.createElement('canvas');dishFilmCanvas.width=DISH_W;dishFilmCanvas.height=DISH_H;
+const dishFilmCtx=dishFilmCanvas.getContext('2d');
+const dishFilmPixels=dishFilmCtx.createImageData(DISH_W,DISH_H);
+const dishShadowCanvas=document.createElement('canvas');dishShadowCanvas.width=DISH_W;dishShadowCanvas.height=DISH_H;
+const dishShadowCtx=dishShadowCanvas.getContext('2d');
+const dishShadowPixels=dishShadowCtx.createImageData(DISH_W,DISH_H);
+// Same Kubelka-Munk spectral model as the paper, but reading directly from
+// the local film instead of copying recipes into the paper's global wet array.
+function dishSpectralRGB(base,total,out){
+ if(total<.00001){out[0]=250;out[1]=249;out[2]=245;return;}
+ dishSpectrumScratch.fill(0);
+ let weighted=0;
+ for(let p=0;p<P;p++)weighted+=dishPigments[base+p]*tintStrength[p];
+ if(weighted<.000001){out[0]=250;out[1]=249;out[2]=245;return;}
+ for(let p=0;p<P;p++){
+  const v=dishPigments[base+p];if(v<.0000001)continue;
+  const weight=v*tintStrength[p]/weighted;
+  for(let b=0;b<BANDS;b++)dishSpectrumScratch[b]+=weight*ks[p][b];
+ }
+ let xx=0,yy=0,zz=0;
+ for(let b=0;b<BANDS;b++){
+  const k=dishSpectrumScratch[b],r=1/(1+k+Math.sqrt(k*k+2*k));
+  xx+=r*X[b];yy+=r*Y[b];zz+=r*Z[b];
+ }
+ xx*=xScale;yy*=yScale;zz*=zScale;
+ out[0]=Math.max(0,Math.min(255,Math.round(gamma(3.2406*xx-1.5372*yy-.4986*zz)*255)));
+ out[1]=Math.max(0,Math.min(255,Math.round(gamma(-.9689*xx+1.8758*yy+.0415*zz)*255)));
+ out[2]=Math.max(0,Math.min(255,Math.round(gamma(.0557*xx-.2040*yy+1.057*zz)*255)));
+}
+function buildDishFilm(){
+ dishHeight.fill(0);dishPigments.fill(0);
+ for(const d of mixDabs){
+  if(d.amount<.00005)continue;
+  const cx=d.x/DISH_SCALE,cy=d.y/DISH_SCALE;
+  // Visually unify neighbouring blobs; the film spreads several pixels beyond
+  // the physical droplet centre but remains confined to the mixing dish.
+  const work=Math.sqrt(Math.max(0,d.kneaded||0));
+  // Kneading stretches each mound into an adhesive, flatter film. This avoids
+  // the disconnected little 'peas' seen after many back-and-forth strokes.
+  const stretch=Math.min(13,work*3.2);
+  const rx=(d.rx+2.2+stretch)/DISH_SCALE,ry=(d.ry+1.9+Math.min(3.5,work*.85))/DISH_SCALE;
+  const x0=Math.max(1,Math.floor(cx-rx-1)),x1=Math.min(DISH_W-2,Math.ceil(cx+rx+1));
+  const y0=Math.max(1,Math.floor(cy-ry-1)),y1=Math.min(DISH_H-2,Math.ceil(cy+ry+1));
+  const density=Math.min(1.8,.62+.33*Math.sqrt(d.amount))*(1-.30*Math.min(1,work/5));
+  const pigmentDensity=density/Math.max(.00001,d.amount);
+  const c=Math.cos(d.rot),sn=Math.sin(d.rot);
+  for(let y=y0;y<=y1;y++)for(let x=x0;x<=x1;x++){
+   const dx=x+.5-cx,dy=y+.5-cy;
+   const ax=dx*c+dy*sn,ay=dy*c-dx*sn;
+   const r2=(ax*ax)/(rx*rx)+(ay*ay)/(ry*ry);
+   if(r2>=1)continue;
+   // Soft film footprint: height's continuous derivatives supply one relief,
+   // never per-parcel outlines even after hundreds of stirring samples.
+   const f=(1-r2)**.72;
+   const i=y*DISH_W+x,o=i*P;
+   dishHeight[i]+=density*f;
+   const share=f*pigmentDensity;
+   for(let p=0;p<P;p++)dishPigments[o+p]+=d.pig[p]*share;
+  }
+ }
+}
+function showMixSurface(){
+ const w=mixCanvas.width,h=mixCanvas.height;
+ mixCtx.clearRect(0,0,w,h);
+ if(mixTotal<=0)return;
+ buildDishFilm();
+ const pixels=dishFilmPixels.data,shadows=dishShadowPixels.data;
+ for(let y=0;y<DISH_H;y++)for(let x=0;x<DISH_W;x++){
+  const i=y*DISH_W+x,off=i*4,base=i*P;
+  const h0=dishHeight[i];
+  if(h0<.013){pixels[off+3]=0;shadows[off+3]=0;continue;}
+  const left=dishHeight[i-1]||0,right=dishHeight[i+1]||0;
+  const up=dishHeight[i-DISH_W]||0,down=dishHeight[i+DISH_W]||0;
+  // Underpainting-like edge, not a grey outline around pale colours.
+  const alpha=Math.min(255,Math.round(255*Math.min(1,h0*2.6)));
+  dishSpectralRGB(base,1,dishColourScratch);
+  const slopeX=right-left,slopeY=down-up;
+  const light=(slopeX*.64+slopeY*.87)*16.5;
+  const depth=Math.min(7.5,h0)*.85;
+  const sheen=(.4+Math.max(0,slopeY))*(Math.max(0,1-Math.abs(x-DISH_W*.44)/(DISH_W*.6)))*2.0;
+  const change=light+sheen-depth;
+  // White / pale yellow should remain white or yellow: relief is conveyed by
+  // very low-amplitude reflected light and a shadow BELOW the shared film.
+  pixels[off]=Math.min(255,Math.max(0,Math.round(dishColourScratch[0]+change)));
+  pixels[off+1]=Math.min(255,Math.max(0,Math.round(dishColourScratch[1]+change*.94)));
+  pixels[off+2]=Math.min(255,Math.max(0,Math.round(dishColourScratch[2]+change*.86)));
+  pixels[off+3]=alpha;
+  shadows[off]=66;shadows[off+1]=45;shadows[off+2]=33;
+  shadows[off+3]=Math.min(78,Math.round(Math.min(1,h0*2.3)*67));
+ }
+ dishShadowCtx.putImageData(dishShadowPixels,0,0);
+ dishFilmCtx.putImageData(dishFilmPixels,0,0);
+ mixCtx.save();
+ mixCtx.imageSmoothingEnabled=true;mixCtx.imageSmoothingQuality='high';
+ mixCtx.globalAlpha=.84;mixCtx.filter='blur(1.55px)';
+ mixCtx.drawImage(dishShadowCanvas,0,2.2,w,h);
+ mixCtx.restore();
+ mixCtx.save();
+ mixCtx.imageSmoothingEnabled=true;mixCtx.imageSmoothingQuality='high';
+ mixCtx.drawImage(dishFilmCanvas,0,0,w,h);
+ mixCtx.restore();
+}
+let mixRenderRaf=0;
+function scheduleMixFilm(){
+ if(mixRenderRaf)return;
+ mixRenderRaf=requestAnimationFrame(()=>{mixRenderRaf=0;showMixSurface()});
+}
+// As the finger moves, neighbouring physical dollops exchange the same twelve
+// pigment species. Every exchange is pairwise, so pigment is conserved.
+// A small reservoir travels with the user's finger. It first picks up actual
+// pigment from touched paint, then puts the same material down farther along
+// the stroke. No pigment is created or destroyed during this operation.
+function collectDishPaint(x,y,amount){
+ const donors=[];let weights=0;
+ for(const d of mixDabs){
+  if(d.amount<=.001)continue;
+  const distance=Math.hypot((d.x-x)*.92,(d.y-y)*1.25);
+  const reach=Math.max(11,d.rx*.7+7);
+  if(distance>reach)continue;
+  const weight=Math.pow(1-distance/reach,1.4)*Math.min(1,d.amount/.4);
+  donors.push({d,weight});weights+=weight;
+ }
+ if(weights<.001)return 0;
+ let picked=0;
+ for(const {d,weight} of donors){
+  const q=Math.min(d.amount*.05,amount*weight/weights);
+  if(q<.0002)continue;
+  const fraction=q/d.amount;
+  for(let p=0;p<P;p++){
+   const take=d.pig[p]*fraction;
+   d.pig[p]=Math.max(0,d.pig[p]-take);
+   mixToolCarry[p]+=take;
+  }
+  d.amount-=q;sizeMixedDollop(d);picked+=q;
+ }
+ mixToolLoad+=picked;
+ return picked;
+}
+function placeDishRecipe(x,y,recipe,amount){
+ if(amount<=.00005)return;
+ let closest=null,dist=Infinity;
+ for(const d of mixDabs){
+  const delta=Math.hypot((d.x-x)*.9,(d.y-y)*1.3);
+  if(delta<dist){closest=d;dist=delta;}
+ }
+ // The mixed smear joins nearby paint instead of leaving a trail of beads.
+ if(closest&&dist<14){
+  const old=closest.amount;
+  closest.amount+=amount;
+  for(let p=0;p<P;p++)closest.pig[p]+=recipe[p];
+  const pull=Math.min(.38,amount/(old+amount)*.65);
+  closest.x=clampMix(closest.x+(x-closest.x)*pull,12,mixCanvas.width-12);
+  closest.y=clampMix(closest.y+(y-closest.y)*pull,9,mixCanvas.height-9);
+  sizeMixedDollop(closest);
+ }else{
+  const pig=Array.from(recipe);
+  const d={p:-1,amount,pig,x:clampMix(x,12,mixCanvas.width-12),y:clampMix(y,9,mixCanvas.height-9),rx:0,ry:0,rot:0,seed:mixStirCount*.082};
+  sizeMixedDollop(d);mixDabs.push(d);
+ }
+}
+function releaseDishCarry(x,y,fraction=1){
+ if(mixToolLoad<=.0000001)return;
+ const amount=mixToolLoad*Math.min(1,Math.max(0,fraction));
+ const ratio=amount/mixToolLoad;
+ const recipe=new Float32Array(P);
+ for(let p=0;p<P;p++){const q=mixToolCarry[p]*ratio;recipe[p]=q;mixToolCarry[p]-=q;}
+ mixToolLoad=Math.max(0,mixToolLoad-amount);
+ placeDishRecipe(x,y,recipe,amount);
+}
+function mergeNearbyDishPaint(){
+ // Merge only extremely near deposits with similar pigment composition.
+ // Unlike a blur, this preserves the amounts of every pigment species.
+ for(let a=mixDabs.length-1;a>=0;a--){
+  const d=mixDabs[a];
+  if(d.amount<.00004){mixDabs.splice(a,1);continue;}
+  for(let b=a-1;b>=0;b--){
+   const e=mixDabs[b];
+   if(e.amount<.00004)continue;
+   if(Math.hypot((d.x-e.x)*.85,(d.y-e.y)*1.25)>Math.min(13,7.5+mixStirCount*.009))continue;
+   let distance=0;
+   for(let p=0;p<P;p++)distance+=Math.abs(d.pig[p]/d.amount-e.pig[p]/e.amount);
+   if(distance>Math.min(1.32,.33+mixStirCount*.0020))continue;
+   const total=d.amount+e.amount;
+   e.x=(d.x*d.amount+e.x*e.amount)/total;
+   e.y=(d.y*d.amount+e.y*e.amount)/total;
+   e.rot=(d.rot*d.amount+e.rot*e.amount)/total;
+   for(let p=0;p<P;p++)e.pig[p]+=d.pig[p];
+   e.amount=total;e.kneaded=Math.max(e.kneaded||0,d.kneaded||0);
+   sizeMixedDollop(e);
+   mixDabs.splice(a,1);break;
+  }
+ }
+}
+function stirMixDish(from,to){
+ if(mixTotal<=0||!mixDabs.length)return;
+ const sx=from.x*mixCanvas.width,sy=from.y*mixCanvas.height;
+ const ex=to.x*mixCanvas.width,ey=to.y*mixCanvas.height;
+ const vx=ex-sx,vy=ey-sy;
+ const distance=Math.hypot(vx,vy);
+ if(distance<.12)return;
+ // A gesture is resampled at a constant spatial interval so that quick and
+ // slow pointer events result in a similar amount of mixing per distance.
+ const steps=Math.min(48,Math.max(1,Math.ceil(distance/3.0)));
+ const dx=vx/steps,dy=vy/steps;
+ for(let step=1;step<=steps;step++){
+  const px=sx+dx*step,py=sy+dy*step;
+  const nearby=[];
+  for(const d of mixDabs){
+   if(d.amount<.0004)continue;
+   const rx=d.x-px,ry=d.y-py;
+   const dist=Math.hypot(rx*.92,ry*1.35);
+   const reach=23+Math.min(8,d.rx*.20);
+   if(dist>reach)continue;
+   const f=Math.max(0,1-dist/reach);
+   const eddy=.019*f;
+   d.kneaded=(d.kneaded||0)+f*.16;
+   d.x=clampMix(d.x+(dx*.46-ry*eddy)*f,12,mixCanvas.width-12);
+   d.y=clampMix(d.y+(dy*.40+rx*eddy)*f,9,mixCanvas.height-9);
+   d.rot=clampMix(d.rot+(dx*ry-dy*rx)*f*.0007,-1.1,1.1);
+   // Stretch the mobile film along the stroke, not into isolated pellets.
+   d.rx=clampMix(d.rx+Math.min(.24,Math.abs(dx)*.013)*f,7,30);
+   nearby.push({d,weight:f});
+  }
+  // Local pigment exchange gradually mixes existing regions without flattening
+  // all of the separate source colours into one global average.
+  for(let j=0;j<nearby.length;j++)for(let k=j+1;k<nearby.length;k++){
+   const aa=nearby[j],bb=nearby[k],a=aa.d,b=bb.d;
+   const dist=Math.hypot((a.x-b.x)*.88,(a.y-b.y)*1.20);
+   if(dist>28)continue;
+   const strength=Math.min(.31,.29*aa.weight*bb.weight*(1-dist/34));
+   if(strength<.0003)continue;
+   const exchanged=Math.min(a.amount,b.amount)*strength;
+   for(let p=0;p<P;p++){
+    const delta=exchanged*(a.pig[p]/a.amount-b.pig[p]/b.amount);
+    a.pig[p]=Math.max(0,a.pig[p]-delta);
+    b.pig[p]=Math.max(0,b.pig[p]+delta);
+   }
+  }
+  collectDishPaint(px-dx*.75,py-dy*.75,.029);
+  if(mixToolLoad>.001)releaseDishCarry(px+dx*.12,py+dy*.12,.43);
+  if(nearby.length>0&&step%3===0){
+   const local=new Float32Array(P);
+   for(const {d,weight} of nearby)for(let p=0;p<P;p++)local[p]+=d.pig[p]*weight;
+   const colour=mixColourFromAmounts(local);
+   mixSwirls.push({x0:px-dx,y0:py-dy,x1:px+dx*.35,y1:py+dy*.35,
+    width:Math.max(4,Math.min(10,3.8+nearby.length*.48)),sway:0,colour});
+   if(mixSwirls.length>100)mixSwirls.shift();
+  }
+ }
+ mixStirCount+=steps;
+ if(mixStirCount%8<steps)mergeNearbyDishPaint();
+ mixDirtySinceUse=true;
+ updateMixUI(false);
+}
+function updateMixUI(animation=false){
+ const hasMix=mixTotal>.0001;
+ if(hasMix)mixColour=mixColourFromAmounts(mixAmounts);
+ else mixColour='';
+ mixEmpty.hidden=hasMix;
+ mixUse.disabled=!hasMix;mixReset.disabled=!hasMix;
+ mixDish.classList.toggle('ready-pour',!hasMix);
+ mixDish.classList.toggle('ready-stir',hasMix);
+ mixDish.setAttribute('aria-label','タップで選んだ色を置く。長押しで増やす。別の色を選んでドラッグすると追加。絵の具の上をなぞると混ぜる');
+ mixEmpty.textContent=!hasMix?'ここに色を置く':'';
+ mixTray.classList.toggle('using',mixBrushActive);
+ mixUse.classList.toggle('selected',mixBrushActive&&!mixDirtySinceUse);
+ scheduleMixFilm();
+ if(animation&&!window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+  const a=mixDish.animate([{transform:'scale(.995)'},{transform:'scale(1.025)',offset:.42},{transform:'scale(1)'}],{duration:290,easing:'ease-out'});
+  a.onfinish=()=>{};
+ }
+}
+function dishPointPixels(point){
+ const w=mixCanvas.width,h=mixCanvas.height;
+ const px=point&&point.x!=null?point.x:.5;
+ const py=point&&point.y!=null?point.y:.55;
+ return {x:clampMix(px*w,17,w-17),y:clampMix(py*h,12,h-12)};
+}
+function sizeMixedDollop(d){
+ // More paint makes a wider, higher mound, rather than dozens of little flecks.
+ // The visible spread is capped by the depth of the small porcelain dish.
+ const r=Math.sqrt(Math.max(.015,d.amount));
+ d.rx=clampMix(9.8+6.2*r,9.5,30.0);
+ d.ry=clampMix(5.8+4.0*r,5.6,17.0);
+}
+function compatibleMixDollop(d,p){
+ if(d.amount<=.00001)return false;
+ for(let k=0;k<P;k++)if(k!==p&&d.pig[k]>d.amount*.013)return false;
+ return true;
+}
+function depositMixDollop(p,amount,point,kind){
+ const base=dishPointPixels(point);
+ const isStream=kind==='drag';
+ const x=clampMix(base.x+(Math.random()-.5)*(isStream?1.6:2.1),17,mixCanvas.width-17);
+ const y=clampMix(base.y+(Math.random()-.5)*(isStream?1.2:1.7),12,mixCanvas.height-12);
+ // Repeated taps / long hold on one spot create a single growing blob.
+ // On a drag, nearby beads are kept distinct but overlap to form a lumpy ribbon.
+ let mound=null,best=Infinity;
+ const maxMerge=isStream?8.5:15.0;
+ for(const d of mixDabs){
+  if(!compatibleMixDollop(d,p))continue;
+  const distance=Math.hypot(d.x-x,d.y-y);
+  if(distance<maxMerge&&distance<best){mound=d;best=distance;}
+ }
+ if(mound){
+  const prev=mound.amount;
+  mound.amount+=amount;
+  mound.pig[p]+=amount;
+  // Keep the centre visually stable while the heap grows.
+  const shift=isStream?.10:.025;
+  mound.x=clampMix(mound.x+(x-mound.x)*shift,17,mixCanvas.width-17);
+  mound.y=clampMix(mound.y+(y-mound.y)*shift,12,mixCanvas.height-12);
+  if(!isStream)mound.rot=clampMix(mound.rot+Math.sin(mixDrawCount*.27)*.008,-.65,.65);
+  sizeMixedDollop(mound);
+ }else{
+  mound={
+   p,amount,pig:Array.from({length:P},(_,k)=>k===p?amount:0),
+   x,y,rx:0,ry:0,rot:(Math.random()-.5)*.48,seed:Math.random()*6.28
+  };
+  sizeMixedDollop(mound);
+  mixDabs.push(mound);
+ }
+ if(mixDabs.length>125){
+  // Compact old material into the nearest blob, conserving all 12 pigments.
+  const old=mixDabs.shift();
+  let closest=mixDabs[0],bestDist=Infinity;
+  for(const item of mixDabs){
+   const dist=Math.hypot(item.x-old.x,item.y-old.y);
+   if(dist<bestDist){bestDist=dist;closest=item;}
+  }
+  if(closest){
+   const combined=closest.amount+old.amount;
+   closest.x=(closest.x*closest.amount+old.x*old.amount)/combined;
+   closest.y=(closest.y*closest.amount+old.y*old.amount)/combined;
+   for(let k=0;k<P;k++)closest.pig[k]+=old.pig[k];
+   closest.amount=combined;sizeMixedDollop(closest);
+  }
+ }
+}
+function addMixPaint(amount=1,point=null,kind='tap'){
+ if(mixTotal>300){
+  const ratio=180/mixTotal;
+  for(let p=0;p<P;p++)mixAmounts[p]*=ratio;
+  mixTotal=180;
+  mixDabs.forEach(d=>{d.amount*=ratio;for(let p=0;p<P;p++)d.pig[p]*=ratio;sizeMixedDollop(d)});
+ }
+ // Each tap puts down actual paint. Pigment-specific tinting strength stays
+ // in the spectral model; the calibrated dose makes incremental mixing usable.
+ const proposed=Math.max(.05,amount)*mixDabVolume[selected];
+ const add=calibratedMixDose(proposed,selected,amount<.99);
+ mixAmounts[selected]+=add;mixTotal+=add;mixDrawCount++;
+ mixLastDepositPigment=selected;
+ mixRecent.push({p:selected,amount:add});if(mixRecent.length>10)mixRecent.shift();
+ mixDirtySinceUse=true;
+ depositMixDollop(selected,add,point,kind);
+ updateMixUI(kind==='tap' && (add>=.8||mixDrawCount%3===0));
+}
+function loadMixedBrush(){
+ if(mixTotal<=0)return;
+ for(let p=0;p<P;p++)brushRecipe[p]=mixAmounts[p]/mixTotal;
+ mixBrushActive=true;mixBrushColour=mixColour;mixDirtySinceUse=false;
+ document.querySelector('.mode').style.setProperty('--active-ink',mixBrushColour);
+ setTool('paint',false);
+ refillBrush(false);
+ refreshBrushPreview(true);
+ updateMixUI();
+ toast('混ぜた色を筆に含ませました');
+}
+function resetMixedDish(){
+ if(!mixTotal)return;
+ mixAmounts.fill(0);mixTotal=0;mixRecent.length=0;mixDabs.length=0;mixSwirls.length=0;mixDrawCount=0;mixStirCount=0;mixDirtySinceUse=false;mixLastDepositPigment=-1;mixToolCarry.fill(0);mixToolLoad=0;
+ if(mixBrushActive){
+  mixBrushActive=false;mixBrushColour='';
+  brushRecipe.fill(0);brushRecipe[selected]=1;
+  document.querySelector('.mode').style.setProperty('--active-ink',paletteColors[selected]);
+  refillBrush(false);
+ }
+ updateMixUI();updateInkUI(true);
+ toast('混色皿を空にしました');
+}
+let mixHoldTimer=0,mixHoldInterval=0,mixHoldPointer=null,mixLastPointerDown=-10000,mixHoldPoint={x:.5,y:.55};
+let mixTouchStart={x:.5,y:.55},mixStirring=false,mixHoldAdded=false;
+let mixDragRemainder=0,mixLastDepositPigment=-1,mixGesture='none',mixGestureMoved=false;
+function mixPointTouchesPaint(point){
+ const x=point.x*mixCanvas.width,y=point.y*mixCanvas.height;
+ return mixDabs.some(d=>{
+  if(d.amount<.002)return false;
+  const stretch=Math.min(13,Math.sqrt(Math.max(0,d.kneaded||0))*3.2);
+  const dx=(x-d.x)/(d.rx*1.15+stretch+3),dy=(y-d.y)/(d.ry*1.2+3);
+  return dx*dx+dy*dy<=1;
+ });
+}
+function stopMixTimersOnly(){
+ clearTimeout(mixHoldTimer);clearInterval(mixHoldInterval);mixHoldTimer=0;mixHoldInterval=0;
+}
+function stopMixHold(){
+ stopMixTimersOnly();
+ // All the paint temporarily picked up by the finger is returned to the dish.
+ if(mixToolLoad>.000001)releaseDishCarry(mixHoldPoint.x*mixCanvas.width,mixHoldPoint.y*mixCanvas.height);
+ mixDish.classList.remove('pouring','stirring');
+ if(mixHoldPointer!==null){try{mixDish.releasePointerCapture(mixHoldPointer)}catch{}}
+ mixHoldPointer=null;mixGesture='none';mixStirring=false;mixHoldAdded=false;mixGestureMoved=false;mixDragRemainder=0;
+ if(mixTotal>.001)updateMixUI(false);
+}
+function layPaintAlongMixPath(from,to,coat=.42){
+ const rect=mixDish.getBoundingClientRect();
+ const dx=(to.x-from.x)*rect.width,dy=(to.y-from.y)*rect.height;
+ const length=Math.hypot(dx,dy);
+ if(length<.001)return;
+ const spacing=11;
+ for(let travelled=spacing-mixDragRemainder;travelled<=length;travelled+=spacing){
+  const t=travelled/length;
+  const point={x:from.x+(to.x-from.x)*t,y:from.y+(to.y-from.y)*t};
+  addMixPaint(coat,point,'drag');
+  mixHoldAdded=true;
+ }
+ mixDragRemainder=(mixDragRemainder+length)%spacing;
+}
+mixDish.addEventListener('pointerdown',e=>{
+ if(e.button!==0)return;
+ e.preventDefault();
+ stopMixHold();
+ mixHoldPointer=e.pointerId;mixLastPointerDown=performance.now();
+ mixHoldPoint=makeMixPointFromEvent(e);mixTouchStart={...mixHoldPoint};
+ mixStirring=false;mixHoldAdded=false;mixGestureMoved=false;mixDragRemainder=0;
+ const empty=mixTotal<=.0001;
+ // First colour lays down a ribbon of paint; subsequent colours are laid
+ // down and immediately blended by the same continuous gesture.
+ if(empty)mixGesture='first';
+ else if(selected!==mixLastDepositPigment||!mixPointTouchesPaint(mixHoldPoint))mixGesture='deposit-mix';
+ else mixGesture='stir';
+ try{mixDish.setPointerCapture(e.pointerId)}catch{}
+ mixDish.classList.add('pouring');
+ if(mixGesture!=='stir'){
+  addMixPaint(1,mixHoldPoint,'tap'); // colour appears as soon as the finger lands
+  mixHoldAdded=true;
+ }
+ mixHoldTimer=setTimeout(()=>{
+  if(mixGesture==='stir'&&!mixHoldAdded){addMixPaint(1,mixHoldPoint,'hold');mixHoldAdded=true;}
+  mixHoldInterval=setInterval(()=>{addMixPaint(.65,mixHoldPoint,'hold');mixHoldAdded=true;},88);
+ },330);
+});
+mixDish.addEventListener('pointermove',e=>{
+ if(mixHoldPointer!==e.pointerId)return;
+ e.preventDefault();
+ const point=makeMixPointFromEvent(e);
+ const distance=Math.hypot((point.x-mixTouchStart.x)*mixDish.offsetWidth,(point.y-mixTouchStart.y)*mixDish.offsetHeight);
+ if(!mixGestureMoved&&distance>4){
+  mixGestureMoved=true;stopMixTimersOnly();
+  if(mixGesture!=='first'){
+   mixStirring=true;mixDish.classList.remove('pouring');mixDish.classList.add('stirring');
+  }
+ }
+ if(mixGestureMoved){
+  if(mixGesture==='first')layPaintAlongMixPath(mixHoldPoint,point,.42);
+  else if(mixGesture==='deposit-mix'){
+   // A little fresh paint is laid down along the drag, then the newly
+   // deposited and existing paint are smeared together without another tap.
+   layPaintAlongMixPath(mixHoldPoint,point,.22);
+   stirMixDish(mixHoldPoint,point);
+  }else stirMixDish(mixHoldPoint,point);
+ }
+ mixHoldPoint=point;
+});
+mixDish.addEventListener('pointerup',e=>{
+ if(mixHoldPointer!==e.pointerId)return;
+ if(mixGesture==='stir'&&!mixGestureMoved&&!mixHoldAdded)addMixPaint(1,mixHoldPoint,'tap');
+ stopMixHold();
+});
+mixDish.addEventListener('pointercancel',stopMixHold);
+mixDish.addEventListener('lostpointercapture',stopMixHold);
+mixDish.addEventListener('pointerleave',e=>{if(mixHoldPointer===e.pointerId&&e.buttons===0)stopMixHold()});
+mixDish.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();addMixPaint(1,{x:.5,y:.55},'tap')}});
+mixDish.addEventListener('click',e=>{if(e.detail===0&&performance.now()-mixLastPointerDown>650)addMixPaint(1,{x:.5,y:.55},'tap')});
+mixUse.addEventListener('click',loadMixedBrush);
+mixReset.addEventListener('click',resetMixedDish);
+updateMixUI();
+
 function touchPaintSurface(chip,e){
  const r=chip.querySelector('.pigment-well').getBoundingClientRect();
  const x=(e.clientX-r.left)/Math.max(1,r.width),y=(e.clientY-r.top)/Math.max(1,r.height);
@@ -2007,18 +2701,34 @@ function touchPaintSurface(chip,e){
  const dent=chip.querySelector('.pigment-dent');if(dent){dent.setAttribute('cx',(mx*86+7).toFixed(1));dent.setAttribute('cy',(my*60+10).toFixed(1))}
 }
 for(const chip of palette.children){
- chip.addEventListener('pointerdown',e=>{chip.classList.add('pressing');touchPaintSurface(chip,e)});
+ const releasePaint=()=>{
+  chip.classList.remove('pressing');
+  chip.style.setProperty('--poke-x','0px');
+  chip.style.setProperty('--poke-y','0px');
+  chip.style.setProperty('--poke-tilt','0deg');
+ };
+ chip.addEventListener('pointerdown',e=>{
+  if(e.button!==0)return;
+  chip.classList.add('pressing');
+  try{chip.setPointerCapture(e.pointerId)}catch{}
+  touchPaintSurface(chip,e);
+ });
  chip.addEventListener('pointermove',e=>{if(chip.classList.contains('pressing'))touchPaintSurface(chip,e)});
- for(const ev of ['pointerup','pointercancel','pointerleave'])chip.addEventListener(ev,()=>chip.classList.remove('pressing'));
+ for(const ev of ['pointerup','pointercancel','lostpointercapture'])chip.addEventListener(ev,releasePaint);
 }
+const resetPaletteTouches=()=>{
+ for(const chip of palette.children){chip.classList.remove('pressing');chip.style.setProperty('--poke-x','0px');chip.style.setProperty('--poke-y','0px');chip.style.setProperty('--poke-tilt','0deg')}
+};
+window.addEventListener('blur',resetPaletteTouches);
+document.addEventListener('visibilitychange',()=>{if(document.hidden)resetPaletteTouches()});
 const previewBrush=document.getElementById('brushIllustration');
 const brushPaint=document.getElementById('brushPaint');
 const brushHairs=document.getElementById('brushHairs');
 let brushAnimTimer;
 function refreshBrushPreview(animate=false){
  const previewInk=document.getElementById('sizePreviewInk');
- if(previewInk){previewInk.style.stroke=paletteColors[selected]||'#eabf48';previewInk.setAttribute('stroke-width',String((3+brushSize*.55).toFixed(2)));}
- brushPaint.setAttribute('fill',paletteColors[selected]||'#ddd');
+ if(previewInk){previewInk.style.stroke=activeInkColour();previewInk.setAttribute('stroke-width',String((3+brushSize*.55).toFixed(2)));}
+ brushPaint.setAttribute('fill',activeInkColour());
  brushPaint.setAttribute('opacity',tool==='mix'?'0.22':String(Math.min(.94,Math.max(0,paintLoad))));
  const widthScale=.75+.37*(brushSize/80);
  brushHairs.style.transform=`scaleY(${widthScale.toFixed(3)})`;
@@ -2027,7 +2737,7 @@ function refreshBrushPreview(animate=false){
   clearTimeout(brushAnimTimer);brushAnimTimer=setTimeout(()=>previewBrush.classList.remove('changed'),500);
  }
 }
-function updateInkUI(force=false){const pct=paintLoad>0?Math.max(1,Math.min(100,Math.round(paintLoad*100))):0;if(!force&&Math.abs(pct-lastInkUi)<1)return;lastInkUi=pct;document.getElementById('inkText').textContent=pct+'%';document.getElementById('inkFill').style.width=pct+'%';document.getElementById('inkFill').style.background=paletteColors[selected]||'#dce9d1';refreshBrushPreview(false)}
+function updateInkUI(force=false){const pct=paintLoad>0?Math.max(1,Math.min(100,Math.round(paintLoad*100))):0;if(!force&&Math.abs(pct-lastInkUi)<1)return;lastInkUi=pct;document.getElementById('inkText').textContent=pct+'%';document.getElementById('inkFill').style.width=pct+'%';document.getElementById('inkFill').style.background=activeInkColour();refreshBrushPreview(false)}
 let refillSeed=37;
 function resetHairSupply(){
  refillSeed++;
@@ -2036,8 +2746,8 @@ function resetHairSupply(){
   hairSupply[j]=Math.max(0,Math.min(1,.52+.085*h+.23*Math.sin(j*.31+refillSeed*.67)));
  }
 }
-function refillBrush(showToast=true){resetBundlePigment();paintLoad=1;inkAlerted=false;inkEmptyAlerted=false;resetHairSupply();updateInkUI(true);if(showToast)toast(colorNames[selected]+'を補充しました')}
-function selectPaint(p){const changed=selected!==p;selected=p;document.querySelector('.mode').style.setProperty('--active-ink',paletteColors[p]);setTool('paint',false);let chip=null;palette.querySelectorAll('.paint').forEach((b)=>{const isActive=Number(b.dataset.pigment)===p;b.classList.toggle('active',isActive);b.setAttribute('aria-pressed',isActive?'true':'false');if(isActive)chip=b});refillBrush(false);refreshBrushPreview(true);if(chip){chip.classList.remove('refill');void chip.offsetWidth;chip.classList.add('refill');setTimeout(()=>chip.classList.remove('refill'),620);animateReplenish(chip)}toast(changed?colorNames[p]+'に持ち替えました':'絵の具を補充しました')}
+function refillBrush(showToast=true){resetBundlePigment();paintLoad=1;inkAlerted=false;inkEmptyAlerted=false;resetHairSupply();updateInkUI(true);if(showToast)toast((mixBrushActive?'混ぜた色':colorNames[selected])+'を補充しました')}
+function selectPaint(p){const changed=selected!==p||mixBrushActive;selected=p;mixBrushActive=false;mixBrushColour='';brushRecipe.fill(0);brushRecipe[p]=1;updateMixUI();document.querySelector('.mode').style.setProperty('--active-ink',paletteColors[p]);setTool('paint',false);let chip=null;palette.querySelectorAll('.paint').forEach((b)=>{const isActive=Number(b.dataset.pigment)===p;b.classList.toggle('active',isActive);b.setAttribute('aria-pressed',isActive?'true':'false');if(isActive)chip=b});refillBrush(false);refreshBrushPreview(true);if(chip){chip.classList.remove('refill');void chip.offsetWidth;chip.classList.add('refill');setTimeout(()=>chip.classList.remove('refill'),620);animateReplenish(chip)}toast(changed?colorNames[p]+'に持ち替えました':'絵の具を補充しました')}
 function animateReplenish(chip){
  if(window.matchMedia('(prefers-reduced-motion: reduce)').matches)return;
  const well=chip.querySelector('.pigment-well');const meter=document.getElementById('inkFill');
@@ -2187,7 +2897,7 @@ saveButton.addEventListener('click',async()=>{
     (typeof navigator.canShare!=='function'||navigator.canShare({files:[file]}));
    if(canNativeShare){
     try{
-     await navigator.share({files:[file],title:'PIGMENT'});
+     await navigator.share({files:[file],title:'PIGMENT〜色を混ぜる〜'});
      flashSaveButton();
      toast('共有メニューを閉じました。写真への保存を選択した場合は写真アプリで確認できます');
     }catch(err){
@@ -2243,6 +2953,28 @@ setInterval(()=>{if(!drying||painting||!activeList.length)return;const now=Date.
  for(const [i,shade] of dried){finishDryPixel(i,shade);finished++}
  if(finished)scheduleRender();
 },950);
+// iPad/Safari gesture guards supplement touch-action and the viewport metadata.
+// Do not block native image long-press in the save fallback.
+const editorGestureTarget=target=>target instanceof Element&&
+ target.closest('.app')&&!target.closest('.save-preview-dialog');
+document.addEventListener('selectstart',e=>{if(editorGestureTarget(e.target))e.preventDefault()},{passive:false});
+document.addEventListener('dragstart',e=>{if(editorGestureTarget(e.target))e.preventDefault()},{passive:false});
+document.addEventListener('contextmenu',e=>{if(editorGestureTarget(e.target))e.preventDefault()},{passive:false});
+for(const gesture of ['gesturestart','gesturechange']){
+ document.addEventListener(gesture,e=>{if(editorGestureTarget(e.target))e.preventDefault()},{passive:false});
+}
+document.addEventListener('touchmove',e=>{
+ if(e.touches.length>1&&editorGestureTarget(e.target))e.preventDefault();
+},{passive:false});
+// Ctrl/Command + trackpad scroll is interpreted as browser zoom on desktop.
+document.addEventListener('wheel',e=>{
+ if((e.ctrlKey||e.metaKey)&&editorGestureTarget(e.target))e.preventDefault();
+},{passive:false});
+document.addEventListener('keydown',e=>{
+ if(!(e.ctrlKey||e.metaKey)||e.altKey||e.shiftKey)return;
+ if(['+','=','-','0','Add','Subtract'].includes(e.key)&&
+    (editorGestureTarget(e.target)||e.target===document.body))e.preventDefault();
+},true);
 // Align the left paint tray and right tool tray precisely with the paper at every desktop width.
 const frameObserver=new ResizeObserver(entries=>{
  const height=entries[0].contentRect.height;
@@ -2251,7 +2983,7 @@ const frameObserver=new ResizeObserver(entries=>{
 frameObserver.observe(document.getElementById('frame'));
 // Guarantee the white paper is visible before the first stroke, including without GPU acceleration.
 document.querySelector('.mode').style.setProperty('--active-ink',paletteColors[selected]);prepareBristles();resetHairSupply();flushAll();updateHistory();updateInkUI(true);updateDryUI();
-window.__pigmentDebug={validateMass(){let biggest=0,neg=0;for(let i=0;i<N;i++){if(mass[i]<-1e-5)neg++;if(mass[i]>.0001){let total=0;for(let p=0;p<P;p++)total+=wet[i*P+p];biggest=Math.max(biggest,Math.abs(total-mass[i]))}}return {biggest,neg}},getVersion(){return 34},getSaveMode(){return appleTouch?'photos':'download'},getBundlePigments(){return Array.from({length:BUNDLES},(_,j)=>Array.from(bundleCarry.subarray(j*P,(j+1)*P)))},getBundleCount(){return BUNDLES},getBundleStain(){return Array.from({length:BUNDLES},(_,j)=>Array.from(bundleStain.subarray(j*P,(j+1)*P)))},getBundleTintFactor(){return Array.from(bundleTintFactor)},getBundleWeightUsed(){return Array.from(bundleWeightUsed)},getPaintedPixelCount(){let n=0;for(let i=0;i<N;i++)if(mass[i]>.05)n++;return n},getMass(x,y){return mass[y*W+x]},getRgb(x,y){const i=(y*W+x)*4;return Array.from(rgba.slice(i,i+3))},getPigments(x,y){return Array.from(wet.slice((y*W+x)*P,(y*W+x+1)*P))},getActiveCount(){return activeList.length},getBrushLoad(){return paintLoad},getBrushCapacityRatio(){return brushCapacityRatio()},getBrushSize(){return brushSize},getBrushWidthFactor(){return currentWidthFactor},getSpeedWidth(speed,pressure=.55,isPen=false){return speedWidth(speed,pressure,isPen)},getStrokeSpeed(){return strokeSpeed},getWidthAt(speed,pressure=.55,pen=false){return speedWidth(speed,pressure,pen)},getLastPoolingMoved(){return lastPoolingMoved},getEdgeDepth(x,y){return edgeDepth(y*W+x)},getColors(){return [...colorNames]},getTintStrength(){return [...tintStrength]},getSurfaceHeight(x,y){return surfaceHeight(y*W+x)},getRelief(x,y){const i=y*W+x;return {dry:fixedRelief[i],wet:mass[i],dryGroove:fixedGroove[i],wetGroove:wetGroove[i]}}};
+window.__pigmentDebug={validateMass(){let biggest=0,neg=0;for(let i=0;i<N;i++){if(mass[i]<-1e-5)neg++;if(mass[i]>.0001){let total=0;for(let p=0;p<P;p++)total+=wet[i*P+p];biggest=Math.max(biggest,Math.abs(total-mass[i]))}}return {biggest,neg}},getVersion(){return 49},getSaveMode(){return appleTouch?'photos':'download'},getBundlePigments(){return Array.from({length:BUNDLES},(_,j)=>Array.from(bundleCarry.subarray(j*P,(j+1)*P)))},getBundleCount(){return BUNDLES},getBundleStain(){return Array.from({length:BUNDLES},(_,j)=>Array.from(bundleStain.subarray(j*P,(j+1)*P)))},getBundleTintFactor(){return Array.from(bundleTintFactor)},getBundleWeightUsed(){return Array.from(bundleWeightUsed)},getPaintedPixelCount(){let n=0;for(let i=0;i<N;i++)if(mass[i]>.05)n++;return n},getMass(x,y){return mass[y*W+x]},getRgb(x,y){const i=(y*W+x)*4;return Array.from(rgba.slice(i,i+3))},getPigments(x,y){return Array.from(wet.slice((y*W+x)*P,(y*W+x+1)*P))},getActiveCount(){return activeList.length},getBrushLoad(){return paintLoad},getBrushCapacityRatio(){return brushCapacityRatio()},getBrushSize(){return brushSize},getBrushWidthFactor(){return currentWidthFactor},getSpeedWidth(speed,pressure=.55,isPen=false){return speedWidth(speed,pressure,isPen)},getStrokeSpeed(){return strokeSpeed},getWidthAt(speed,pressure=.55,pen=false){return speedWidth(speed,pressure,pen)},getLastPoolingMoved(){return lastPoolingMoved},getEdgeDepth(x,y){return edgeDepth(y*W+x)},getMixState(){return {toolLoad:mixToolLoad,amounts:Array.from(mixAmounts),total:mixTotal,colour:mixColour,active:mixBrushActive,recipe:Array.from(brushRecipe),stirs:mixStirCount,swirls:mixSwirls.length,dabs:mixDabs.map(d=>({...d,pig:[...d.pig]}))}},getColors(){return [...colorNames]},getTintStrength(){return [...tintStrength]},getMixDabVolumes(){return [...mixDabVolume]},getPerceptualDoseInfo(){return {tapMaxOKLab:MAX_TAP_STEP,holdMaxOKLab:MAX_HOLD_STEP}},getSurfaceHeight(x,y){return surfaceHeight(y*W+x)},getRelief(x,y){const i=y*W+x;return {dry:fixedRelief[i],wet:mass[i],dryGroove:fixedGroove[i],wetGroove:wetGroove[i]}}};
 })();
 </script>
 </body>
